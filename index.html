@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Турнир №12 — Киселёвка</title>
+<link href="https://fonts.googleapis.com/css2?family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&family=PT+Mono&display=swap" rel="stylesheet">
+<style>
+:root{--felt:#0e2b22;--felt2:#143a2e;--bone:#ebe4d2;--brass:#c4a25c;--blood:#a3253a;--dim:#9db3a6;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root:not([data-theme="light"]){color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at 50% 0%,var(--felt2),var(--felt) 70%) fixed;color:var(--bone);font-family:'Old Standard TT',Georgia,serif;line-height:1.55;min-height:100vh}
+main{max-width:520px;margin:0 auto;padding:28px 20px 48px}
+h1{font-size:2.6rem;line-height:1.05;margin:0 0 6px;font-weight:700;letter-spacing:.01em}
+.sub{color:var(--brass);font-style:italic;font-size:1.1rem;margin:0 0 28px}
+.mono{font-family:'PT Mono',ui-monospace,monospace}
+.rule{border:0;border-top:1px solid var(--brass);opacity:.5;margin:22px 0}
+.pick p{margin:0 0 14px}
+.names{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+button{font:inherit;color:inherit;cursor:pointer}
+.name{background:transparent;border:1px solid var(--brass);padding:12px 12px;text-align:left;font-size:1rem;line-height:1.25;border-radius:2px}
+.name:hover,.name:focus-visible{background:rgba(196,162,92,.14);outline:2px solid var(--brass);outline-offset:2px}
+.guest{display:flex;gap:8px}
+.guest input{flex:1;min-width:0;font:inherit;background:rgba(0,0,0,.25);border:1px solid var(--dim);color:var(--bone);padding:12px;border-radius:2px}
+.card{display:none;background:var(--bone);color:#1b1a17;padding:26px 22px 24px;border-radius:2px;position:relative;box-shadow:0 18px 40px rgba(0,0,0,.5);transform-origin:top center}
+.card.show{display:block;animation:open .7s cubic-bezier(.2,.8,.2,1)}
+@keyframes open{from{transform:perspective(700px) rotateX(-70deg);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.card.show{animation:none}}
+.card h2{margin:0 0 4px;font-size:1.7rem;line-height:1.15}
+.to{font-size:.85rem;color:#6b6556;margin:0 0 14px}
+.card p{margin:0 0 12px}
+.seal{position:absolute;right:16px;top:-16px;width:56px;height:56px;border-radius:50%;background:var(--blood);color:var(--bone);display:grid;place-items:center;font-weight:700;font-size:1.3rem;box-shadow:0 4px 10px rgba(0,0,0,.45);border:3px double rgba(255,255,255,.35)}
+dl{margin:16px 0;display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:.92rem;border-top:1px solid #1b1a17;border-bottom:1px solid #1b1a17;padding:12px 0}
+dt{color:#6b6556}dd{margin:0}
+.rsvp{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.rsvp button{padding:12px 16px;border:1px solid #1b1a17;background:#1b1a17;color:var(--bone);border-radius:2px;font-size:1rem}
+.rsvp button.no{background:transparent;color:#1b1a17}
+.msg{font-size:.85rem;color:var(--blood);min-height:1.2em;margin-top:8px}
+.board{margin-top:34px}.board h3{font-size:1.4rem;margin:0 0 4px}.board .cap{color:var(--dim);font-size:.9rem;margin:0 0 12px}.st{display:flex;align-items:center;gap:8px;font-size:.92rem;color:var(--dim)}.st.yes{color:var(--brass)}.chip.no{background:transparent;box-shadow:inset 0 0 0 2px var(--dim)}.chip.nil{background:transparent;box-shadow:inset 0 0 0 1px rgba(157,179,166,.4)}.rsvp button[aria-pressed=true]{outline:3px solid var(--brass);outline-offset:2px}.hall{margin-top:34px}.hall h3{font-size:1.4rem;margin:0 0 4px}.hall .cap{color:var(--dim);font-size:.9rem;margin:0 0 12px}.row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid rgba(196,162,92,.3)}.nm{font-size:1.05rem}.chips{display:flex;gap:5px}.chip{width:20px;height:20px;border-radius:50%;background:var(--brass);box-shadow:inset 0 0 0 3px var(--felt2),inset 0 0 0 4px var(--brass)}.row.low .chip{background:var(--bone);box-shadow:inset 0 0 0 3px var(--felt2),inset 0 0 0 4px var(--bone)}
+.back{background:transparent;border:1px solid var(--blood);color:var(--blood);margin-top:18px;padding:10px 14px;border-radius:2px;font-size:1rem}.back:hover,.back:focus-visible{background:var(--blood);color:var(--bone);outline:none}
+</style>
+</head>
+<body>
+<main>
+<h1>Турнир №12</h1>
+<p class="sub">Киселёвка. Закрытая игра. Двенадцать конвертов разосланы.</p>
+
+<section class="pick" id="pick">
+<p>Для каждого из двенадцати приготовлен свой конверт. Назови себя.</p>
+<div class="names" id="names"></div>
+<hr class="rule">
+<div class="guest"><input id="gname" placeholder="Нет в списке? Введи имя" maxlength="30" aria-label="Имя гостя"><button class="name" id="gbtn">Войти</button></div>
+</section>
+
+<article class="card" id="card" aria-live="polite">
+<div class="seal">12</div>
+<p class="to mono" id="to"></p>
+<h2 id="title"></h2>
+<div id="body"></div>
+<dl class="mono">
+<dt>Где</dt><dd>Киселёвка, закрытый зал</dd>
+<dt>Когда</dt><dd id="when">Дату и время назовёт организатор в чате</dd>
+<dt>Вход</dt><dd>500 ₽, ребаи разрешены</dd>
+<dt>Правила</dt><dd>Играем честно, проигрываем красиво</dd>
+</dl>
+<div class="rsvp">
+<button id="yes">Я в игре</button>
+<button class="no" id="no">Пас</button>
+</div>
+<div class="msg" id="msg"></div>
+<button class="back" id="back">Взять другой конверт</button>
+</article>
+
+<section class="board" id="board" hidden><h3>Кто в игре</h3><p class="cap" id="bcap"></p><div id="brows"></div></section>
+<section class="hall"><h3>Зал славы Киселёвки</h3><p class="cap">Каждая фишка означает выигранный турнир. На вершине дуэль: два лидера идут вровень.</p><div class="row"><span class="nm">Горбатенков Юрий</span><span class="chips" role="img" aria-label="4 побед"><span class="chip"></span><span class="chip"></span><span class="chip"></span><span class="chip"></span></span></div><div class="row"><span class="nm">Якубенков Павел</span><span class="chips" role="img" aria-label="4 побед"><span class="chip"></span><span class="chip"></span><span class="chip"></span><span class="chip"></span></span></div><div class="row low"><span class="nm">Кашенов Павел</span><span class="chips" role="img" aria-label="2 побед"><span class="chip"></span><span class="chip"></span></span></div><div class="row low"><span class="nm">Леоненков Дмитрий</span><span class="chips" role="img" aria-label="1 побед"><span class="chip"></span></span></div></section>
+</main>
+
+<script>
+var DB = "https://poker-1351a-default-rtdb.firebaseio.com/"; // адрес Firebase Realtime Database, например https://xxx-default-rtdb.europe-west1.firebasedatabase.app
+var ROOM = "t12";
+var WHEN = "07.11.2026, 19:00"; // впиши сюда дату и время, например "Четверг, 19:00"
+var P = {
+ "pavel-k":{n:"Кашенов Павел",t:"Хозяин стола",
+  b:["Два кубка, а из топ-3 ты за всё время вылетал ровно один раз. Холодный стратег: сначала изучаешь соперников, потом бьёшь, а после поражения просишь «разобрать, где именно я ошибся».","Сукно твоё, фишки твои, правила твои. Остаётся вопрос, найдётся ли кто-то, кто собьёт с тебя это спокойствие."]},
+ "yura":{n:"Горбатенков Юрий",t:"Юрий, король вернулся",
+  b:["Ты собираешь людей по машинам, пишешь «господа, все отпишитесь» и держишь логистику всего стола. Четыре кубка, и последний, одиннадцатый, был твоим.","Будущий юрист умеет оспорить любой штраф, но блайнды оспорить нельзя. Сядешь за пятый кубок или опять застрянешь в пробке?"]},
+ "pavel-ya":{n:"Якубенков Павел",t:"Якуба, император молчаливого стола",
+  b:["Четыре кубка, и при этом в чате ты появляешься за пару часов до игры с вопросом «что у нас сегодня?». Приходишь тихо, а уходишь с банком.","Юрий догнал тебя по титулам. Теперь молчание не поможет: либо пятый кубок, либо трон делится на двоих."]},
+ "dima":{n:"Леоненков Дмитрий",t:"Димон, тот, кого недооценивают",
+  b:["Один кубок в коллекции, и взял ты его тогда, когда никто не ждал. Тебя недооценивают, а в покере это лучшая позиция: соперники расслабляются, а ты нет.","Двое лидеров идут вровень, а ты самый непредсказуемый за столом. Устрой им хаос."]},
+ "kolya":{n:"Демченков Николай",t:"Коля, командир из War Thunder",
+  b:["Ты проводишь часы в War Thunder, а там выигрывает тот, кто умеет ждать в засаде и бить один раз и точно. За покерным столом работает тот же принцип.","Займи позицию, выжди нужную раздачу и сделай свой выстрел."]},
+ "andrey":{n:"Чериченский Андрей",t:"Андрей, дебютант, который не отдал второе место",
+  b:["Первая игра, и ты сразу занял второе место. Для дебютанта это не везение, а наглость, а наглость за этим столом уважают.","Ты хочешь играть на постоянной основе, и стол это запомнил. Теперь нужно показать, что дебют был не случайностью."]},
+ "slava":{n:"Шустов Вячеслав",t:"Шустый, рекордсмен по ребаям",
+  b:["В первый вечер ты докупался 3–4 раза: рекорд Киселёвки. Олл-ин вслепую для тебя обычный ход, а не отчаяние.","Остальные считают оставшиеся фишки, а ты считаешь, сколько раз докупишься. Сколько на этот раз?"]},
+ "den":{n:"Новиков Денис",t:"Ден, участник половины турниров",
+  b:["Половина турниров за плечами, а кубок пока обходит тебя стороной. Опыта достаточно, блайнды ты читаешь, не хватает одной нужной раздачи.","Может быть, именно в 12-м эта раздача и придёт."]},
+ "george":{n:"Алексанян Георгий",t:"Жорик, самый желанный гость",
+  b:["Ты появляешься за столом редко, и именно поэтому никто не знает, чего от тебя ждать. Для соперников это хуже, чем знать твои карты.","Приходи на 12-й: стол будет рад, а фишки для тебя уже лежат."]},
+ "alex":{n:"Горбатенков Александр",t:"Саша, дебютант со вторым местом",
+  b:["Одна игра, второе место, и репутация уже есть. Ты младший за столом, а результат такой, что старшим есть о чём подумать.","Покажи, что дебют был началом, а не разовой удачей."]},
+ "kostya":{n:"Михайлов Константин",t:"Костян, человек на своей волне",
+  b:["Игр за плечами немного, а за столом ты не похож на остальных: никто не знает, как ты играешь. Это хуже для соперников, чем если бы ты просто был сильным.","Докажи, что опыт не главное, когда карты на твоей стороне."]},
+ "maxim":{n:"Новиков Максим",t:"Максим, игрок одного турнира",
+  b:["Ты всё ещё учишься читать стол, и в этом твоё преимущество: никто не знает, блефуешь ты или просто не разобрался в правилах.","Выбирай: стать добычей или устроить сюрприз."]},
+ "guest":{n:"Гость",t:"Тёмная лошадка на подходе",
+  b:["Тебя не было среди чемпионов, и именно поэтому за столом тебя не будут бояться. Ошибка с их стороны.","Двенадцатый турнир может подарить Киселёвке новое имя. Приходи и проверь, чьё."]}
+};
+var order=["pavel-k","yura","pavel-ya","dima","kolya","andrey","slava","den","george","alex","kostya","maxim"];
+var $=function(i){return document.getElementById(i)};
+var cur=null,gn="";
+if(WHEN)$("when").textContent=WHEN;
+order.forEach(function(k){var b=document.createElement("button");b.className="name";b.textContent=P[k].n;b.onclick=function(){go(k)};$("names").appendChild(b)});
+function go(k,name){
+ var p=P[k];if(!p)return;cur=k;gn=name||"";
+ $("to").textContent="Лично в руки: "+(k==="guest"&&gn?gn:p.n);
+ $("title").textContent=p.t;
+ $("body").innerHTML="";
+ p.b.forEach(function(t){var e=document.createElement("p");e.textContent=t;$("body").appendChild(e)});
+ $("pick").style.display="none";
+ var c=$("card");c.classList.remove("show");void c.offsetWidth;c.classList.add("show");
+ $("msg").textContent="";if(window.mark)mark();
+ try{if(k!=="guest")history.replaceState(null,"","#"+k);}catch(e){}
+}
+function who(){return cur==="guest"?(gn||"Гость"):P[cur].n}
+function say(t){
+ var ok=false;
+ try{navigator.clipboard.writeText(t).then(function(){$("msg").textContent="Скопировано. Вставь в чат: «"+t+"»"},function(){$("msg").textContent="Отправь в чат: «"+t+"»"});ok=true}catch(e){}
+ if(!ok)$("msg").textContent="Отправь в чат: «"+t+"»";
+}
+$("yes").onclick=function(){vote("yes")};
+$("no").onclick=function(){vote("no")};
+var votes={};
+function esc(t){return String(t).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function gkey(){var c=(gn||"").replace(/[^A-Za-zА-Яа-яЁё0-9 \-]/g,"").trim().slice(0,30);return c?"g_"+c:""}
+function myid(){return cur==="guest"?gkey():cur}
+function url(id){return DB.replace(/\/$/,"")+"/rsvp/"+ROOM+(id?"/"+encodeURIComponent(id):"")+".json"}
+function render(){
+ if(!DB)return;
+ $("board").hidden=false;
+ var rows="",n=0;
+ var guests=Object.keys(votes).filter(function(k){return k.indexOf("g_")===0}).sort();
+ order.concat(guests).forEach(function(k){
+  var v=votes[k],g=k.indexOf("g_")===0,nm=g?k.slice(2)+" (гость)":P[k].n;
+  var c=v==="yes"?"":(v==="no"?" no":" nil"),t=v==="yes"?"в игре":(v==="no"?"пас":"не ответил");
+  if(v==="yes")n++;
+  rows+='<div class="row"><span class="nm">'+esc(nm)+'</span><span class="st'+(v==="yes"?" yes":"")+'"><span class="chip'+c+'"></span>'+t+'</span></div>';
+ });
+ $("brows").innerHTML=rows;
+ $("bcap").textContent="В игре: "+n+". Играем, когда нас не меньше шести.";
+ mark();
+}
+function mark(){
+ var id=cur&&myid(),v=id&&votes[id];
+ $("yes").setAttribute("aria-pressed",v==="yes");
+ $("no").setAttribute("aria-pressed",v==="no");
+}
+function load(){
+ if(!DB)return;
+ fetch(url()).then(function(r){return r.json()}).then(function(d){votes=d||{};render()}).catch(function(){$("bcap").textContent="Список пока не загрузился. Обнови страницу."});
+}
+function vote(v){
+ var id=myid();
+ if(!DB||!id){say(who()+(v==="yes"?": в игре, фишки готовы":": пас в этот раз"));return}
+ $("msg").textContent="Записываю…";
+ fetch(url(id),{method:"PUT",body:JSON.stringify(v)}).then(function(r){
+  if(!r.ok)throw 0;votes[id]=v;render();
+  $("msg").textContent=v==="yes"?"Записано: ты в игре.":"Записано: ты пас. Передумаешь, нажми «Я в игре».";
+ }).catch(function(){$("msg").textContent="Не получилось записать. Проверь интернет и попробуй ещё раз."});
+}
+load();setInterval(load,20000);
+$("back").onclick=function(){$("card").classList.remove("show");$("pick").style.display="block";try{history.replaceState(null,"",location.pathname)}catch(e){}};
+$("gbtn").onclick=function(){var v=$("gname").value.trim();if(v)go("guest",v)};
+function route(){var h=(location.hash||"").slice(1);if(P[h]&&h!=="guest")go(h)}
+window.addEventListener("hashchange",route);route();
+</script>
+</body>
+</html>
